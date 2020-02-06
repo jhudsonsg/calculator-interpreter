@@ -15,5 +15,3 @@ RUN apt-get update -y \
 
 ENV GOPATH="${HOME}/work"
 ENV PATH="${PATH}:/usr/local/go/bin:${GOPATH}/bin"
-
-RUN echo "Start you service"
