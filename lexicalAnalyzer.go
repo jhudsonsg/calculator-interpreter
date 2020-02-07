@@ -4,30 +4,70 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strings"
 )
 
-var currentPositionExpression int = -1
-var expressionLimit int = 0
-var expressions []string
+var currentPositionExpression int = 0
 
-func parseExpression() Token {
-	if len(expressions) == 0 {
-		expressions = strings.Split(expression, " ")
-		expressionLimit = len(expressions)
+func getCaracter() string {
+	var value string
+
+	for {
+		value = string(expression[currentPositionExpression])
+		if value != " " {
+			break
+		}
+		currentPositionExpression++
+	}
+
+	return value
+}
+
+func parseExpression() {
+	if len(expression) == currentPositionExpression {
+		currentToken = token{}
+		return
+	}
+
+	value := getCaracter()
+
+	if match := isOperator(value); match == true {
+		currentToken = token{value, operator}
+	} else if match := isNumber(value); match == true {
+		complementNumber := value
+
+		for {
+			if len(expression)-1 == currentPositionExpression {
+				break
+			}
+
+			currentPositionExpression++
+			value := getCaracter()
+
+			if match := isNumber(value); match == true {
+				complementNumber = complementNumber + value
+			} else {
+				currentPositionExpression--
+				break
+			}
+		}
+
+		currentToken = token{complementNumber, number}
+	} else if match, _ := regexp.MatchString("[\\(\\)]", value); match == true {
+		currentToken = token{value, separator}
+	} else {
+		fmt.Println("Erro lexico na espressao:", expression, "\nString com erro:", value)
+		os.Exit(1)
 	}
 
 	currentPositionExpression++
-	value := expressions[currentPositionExpression]
+}
 
-	if match, _ := regexp.MatchString("[\\+\\-\\*\\/]", value); match == true {
-		return Token{value, operator}
-	} else if match, _ := regexp.MatchString("[0-9]", value); match == true {
-		return Token{value, number}
-	}
+func isOperator(str string) bool {
+	match, _ := regexp.MatchString("[\\+\\-\\*\\/]", str)
+	return match
+}
 
-	fmt.Println("Erro lexico na espressao:", expression, "\nString com erro:", value)
-	os.Exit(1)
-
-	return Token{}
+func isNumber(str string) bool {
+	match, _ := regexp.MatchString("[0-9]", str)
+	return match
 }

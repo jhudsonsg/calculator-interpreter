@@ -1,9 +1,6 @@
 package main
 
-const number int = 1
-const operator int = 2
-
-type Token struct {
+type token struct {
 	value     string
 	typeValue int
 }
