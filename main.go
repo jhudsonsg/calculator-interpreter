@@ -20,12 +20,12 @@ func parseAdditionSubtraction(result *int) {
 	var temp int
 	var op string
 
-	parseContinuationAdditionSubtraction(result)
+	parseMultiplicationDivision(result)
 	for {
 		op = currentToken.value
 		if op == "+" || op == "-" {
 			parseExpression()
-			parseContinuationAdditionSubtraction(&temp)
+			parseMultiplicationDivision(&temp)
 
 			switch op {
 			case "-":
@@ -34,6 +34,29 @@ func parseAdditionSubtraction(result *int) {
 				*result = *result + temp
 			}
 
+		} else {
+			break
+		}
+	}
+}
+
+func parseMultiplicationDivision(result *int) {
+	var temp int
+	var op string
+
+	parseContinuationAdditionSubtraction(result)
+	for {
+		op = currentToken.value
+		if op == "*" || op == "/" {
+			parseExpression()
+			parseContinuationAdditionSubtraction(&temp)
+
+			switch op {
+			case "*":
+				*result = *result * temp
+			case "/":
+				*result = *result / temp
+			}
 		} else {
 			break
 		}
