@@ -52,7 +52,7 @@ func parseExpression() {
 		}
 
 		currentToken = token{complementNumber, number}
-	} else if match, _ := regexp.MatchString("[\\(\\)]", value); match == true {
+	} else if match := isSeparator(value); match == true {
 		currentToken = token{value, separator}
 	} else {
 		fmt.Println("Erro lexico na espressao:", expression, "\nString com erro:", value)
@@ -69,5 +69,10 @@ func isOperator(str string) bool {
 
 func isNumber(str string) bool {
 	match, _ := regexp.MatchString("[0-9]", str)
+	return match
+}
+
+func isSeparator(str string) bool {
+	match, _ := regexp.MatchString("[\\(\\)]", str)
 	return match
 }

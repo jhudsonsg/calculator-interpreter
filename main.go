@@ -11,21 +11,21 @@ var expression string
 var currentToken token
 var result int
 
-func evalExp() {
+func eval() {
 	parseExpression()
-	evalExp2(&result)
+	parseAdditionSubtraction(&result)
 }
 
-func evalExp2(result *int) {
+func parseAdditionSubtraction(result *int) {
 	var temp int
 	var op string
 
-	evalExp3(result)
+	parseContinuationAdditionSubtraction(result)
 	for {
 		op = currentToken.value
 		if op == "+" || op == "-" {
 			parseExpression()
-			evalExp3(&temp)
+			parseContinuationAdditionSubtraction(&temp)
 
 			switch op {
 			case "-":
@@ -40,7 +40,7 @@ func evalExp2(result *int) {
 	}
 }
 
-func evalExp3(result *int) {
+func parseContinuationAdditionSubtraction(result *int) {
 	var op string = ""
 
 	if currentToken.typeValue == operator && (currentToken.value == "+" || currentToken.value == "-") {
@@ -48,17 +48,17 @@ func evalExp3(result *int) {
 		parseExpression()
 	}
 
-	evalExp4(result)
+	parseSeparator(result)
 
 	if op == "-" {
 		*result = -(*result)
 	}
 }
 
-func evalExp4(result *int) {
+func parseSeparator(result *int) {
 	if currentToken.value == "(" {
 		parseExpression()
-		evalExp2(result)
+		parseAdditionSubtraction(result)
 
 		if currentToken.value != ")" {
 			fmt.Println("Erro de sintaxe")
@@ -75,17 +75,18 @@ func parseValue(result *int) {
 	if currentToken.typeValue == number {
 		*result, _ = strconv.Atoi(currentToken.value)
 		parseExpression()
-	} else {
-		fmt.Println("Erro de sintaxe")
-		os.Exit(1)
+		return
 	}
+
+	fmt.Println("Erro de sintaxe")
+	os.Exit(1)
 }
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
 		expression = scanner.Text()
-		evalExp()
+		eval()
 		fmt.Println(result)
 	}
 }
