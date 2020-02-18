@@ -55,7 +55,7 @@ func parseExpression() {
 	} else if match := isSeparator(value); match == true {
 		currentToken = token{value, separator}
 	} else {
-		fmt.Println("Erro lexico na espressao:", expression, "\nString com erro:", value)
+		fmt.Println("Erro léxico na espressao:", expression, "\nString com erro:", value)
 		os.Exit(1)
 	}
 

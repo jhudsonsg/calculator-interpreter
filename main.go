@@ -7,9 +7,11 @@ import (
 	"strconv"
 )
 
-var expression string
-var currentToken token
-var result int
+var (
+	expression   string
+	currentToken token
+	result       int
+)
 
 func eval() {
 	parseExpression()
@@ -17,8 +19,10 @@ func eval() {
 }
 
 func parseAdditionSubtraction(result *int) {
-	var temp int
-	var op string
+	var (
+		temp int
+		op   string
+	)
 
 	parseMultiplicationDivision(result)
 	for {
@@ -41,8 +45,10 @@ func parseAdditionSubtraction(result *int) {
 }
 
 func parseMultiplicationDivision(result *int) {
-	var temp int
-	var op string
+	var (
+		temp int
+		op   string
+	)
 
 	parseContinuationAdditionSubtraction(result)
 	for {
@@ -64,7 +70,7 @@ func parseMultiplicationDivision(result *int) {
 }
 
 func parseContinuationAdditionSubtraction(result *int) {
-	var op string = ""
+	op := ""
 
 	if currentToken.typeValue == operator && (currentToken.value == "+" || currentToken.value == "-") {
 		op = currentToken.value
